@@ -5,7 +5,7 @@ type ByteView struct {
 	b []byte // 选择 byte 类型是为了能够支持任意的数据类型的存储，例如字符串、图片等
 }
 
-func (v ByteView) Len() int {
+func (v ByteView) Len() int { // implement Value
 	return len(v.b)
 }
 
