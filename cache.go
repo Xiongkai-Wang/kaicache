@@ -3,7 +3,7 @@ package kaicache
 import (
 	"sync"
 
-	"xiongkai.com/kaiCache/lru"
+	"xiongkai.com/kaicache/lru"
 )
 
 type cache struct {

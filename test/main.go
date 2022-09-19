@@ -4,6 +4,8 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+
+	"xiongkai.com/kaicache"
 )
 
 var db = map[string]string{
