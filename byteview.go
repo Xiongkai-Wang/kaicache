@@ -9,7 +9,7 @@ func (v ByteView) Len() int { // implement Value
 	return len(v.b)
 }
 
-// b can only be read; prevent write from outside program
+// b can only be read; prevent overwrite from outside program
 func (v ByteView) ByteSlice() []byte {
 	return cloneBytes(v.b)
 }

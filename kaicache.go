@@ -65,6 +65,7 @@ func (g *Group) load(key string) (value ByteView, err error) {
 }
 
 func (g *Group) getLocally(key string) (ByteView, error) {
+	// // callback
 	bytes, err := g.getter.Get(key)
 	if err != nil {
 		return ByteView{}, err
