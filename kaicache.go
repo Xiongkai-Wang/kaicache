@@ -42,6 +42,13 @@ func NewGroup(name string, cacheBytes int64, getter Getter) *Group {
 	return g
 }
 
+func GetGroup(name string) *Group {
+	mu.RLock() // 只读锁
+	g := groups[name]
+	mu.RUnlock()
+	return g
+}
+
 func (g *Group) RegisterPeers(peers PeerPicker) {
 	if g.peers != nil {
 		panic("registerPeers called more than once")
@@ -55,13 +62,6 @@ func (g *Group) getFromPeer(peer PeerGetter, key string) (ByteView, error) {
 		return ByteView{}, err
 	}
 	return ByteView{b: bytes}, nil
-}
-
-func GetGroup(name string) *Group {
-	mu.RLock() // 只读锁
-	g := groups[name]
-	mu.RUnlock()
-	return g
 }
 
 func (g *Group) Get(key string) (ByteView, error) {
@@ -80,7 +80,7 @@ func (g *Group) Get(key string) (ByteView, error) {
 func (g *Group) load(key string) (value ByteView, err error) {
 	if g.peers != nil {
 		if peer, ok := g.peers.PickPeer(key); ok {
-			if value, err := g.getFromPeer(peer, key); err == nil {
+			if value, err = g.getFromPeer(peer, key); err == nil {
 				return value, nil
 			}
 			log.Println("[GeeCache] failed to get from peer", err)

@@ -19,6 +19,8 @@ const (
 	defalutReplicas = 50
 )
 
+var _ PeerPicker = (*HTTPPool)(nil)
+
 // HTTPPool implements PeerPicker for a pool of HTTP peers: multiple cache nodes
 type HTTPPool struct {
 	self     string // "https://example.net:8000"
@@ -68,7 +70,7 @@ func (p *HTTPPool) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	w.Header().Set("Content-Type", "Application/octet-stream")
+	w.Header().Set("Content-Type", "application/octet-stream")
 	w.Write(view.ByteSlice())
 
 }
@@ -81,6 +83,7 @@ func (p *HTTPPool) Log(format string, v ...interface{}) {
 func (p *HTTPPool) Set(peers ...string) {
 	p.mu.Lock()
 	defer p.mu.Unlock()
+	p.peers = consistenthash.New(defalutReplicas, nil) //?
 	p.peers.Add(peers...)
 	p.httpGetters = make(map[string]*httpGetter, len(peers))
 	for _, peer := range peers {
@@ -91,6 +94,7 @@ func (p *HTTPPool) Set(peers ...string) {
 func (p *HTTPPool) PickPeer(key string) (PeerGetter, bool) {
 	p.mu.Lock()
 	defer p.mu.Unlock()
+	// call consistenthash
 	if peer := p.peers.Get(key); peer != "" && peer != p.self {
 		p.Log("pick peer %s", peer)
 		return p.httpGetters[peer], true
