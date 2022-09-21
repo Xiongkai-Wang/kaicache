@@ -76,7 +76,7 @@ func (p *HTTPPool) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 }
 
 func (p *HTTPPool) Log(format string, v ...interface{}) {
-	log.Println("[Server %s received:] %s", p.self, fmt.Sprintf(format, v...))
+	log.Printf("[Server %s received:] %s", p.self, fmt.Sprintf(format, v...))
 }
 
 // register peers and its httpGetter
