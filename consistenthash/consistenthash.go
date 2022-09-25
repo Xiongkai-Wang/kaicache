@@ -38,7 +38,7 @@ func New(replicas int, fn Hash) *Map {
 }
 
 // add Nodes
-func (m *Map) Add(keys ...string) { // can add 1 & more at a time
+func (m *Map) Add(keys ...string) { // can add 1 & more node at a time
 	for _, key := range keys {
 		for i := 0; i < m.replicas; i++ {
 			hash := int(m.hash([]byte(strconv.Itoa(i) + key)))
@@ -57,6 +57,7 @@ func (m *Map) Get(key string) string {
 	}
 	hash := int(m.hash([]byte(key)))
 	// Binary search 顺时针找到第一个匹配的*虚拟节点*的下标 idx
+	// Search returns the first true index. If there is no such index, Search returns n.
 	idx := sort.Search(len(m.keys), func(i int) bool {
 		return m.keys[i] >= hash
 	})
